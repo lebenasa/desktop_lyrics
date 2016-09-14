@@ -29,7 +29,7 @@ public:
     void printMap(const QVariantMap &v)
     {
         for (auto i = v.begin(); i != v.end(); ++i)
-            qDebug() << i.key() << ": " << i.value().toString();
+            qDebug() << i.key() << ": " << i.value();
     }
 
     void start()

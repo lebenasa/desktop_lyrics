@@ -131,6 +131,22 @@ void MediaService::updateMetadata()
     {
         m_metadata = reply.value();
         emit metadataChanged(m_metadata);
+
+        emit albumChanged(album());
+        emit artistChanged(artist());
+        emit arturlChanged(arturl());
+        emit audioBitrateChanged(audioBitrate());
+        emit audioSampleRateChanged(audioSampleRate());
+        emit bpmChanged(bpm());
+        emit commentChanged(comment());
+        emit genreChanged(genre());
+        emit locationChanged(location());
+        emit mtimeChanged(mtime());
+        emit performerChanged(performer());
+        emit timeChanged(time());
+        emit titleChanged(title());
+        emit trackNumberChanged(trackNumber());
+        emit yearChanged(year());
     }
     else
         qWarning() << reply.error().name() << reply.error().message();
@@ -157,3 +173,94 @@ void MediaService::updatePosition()
     else
         qWarning() << reply.error().name() << reply.error().message();
 }
+
+QString MediaService::album() const
+{
+    return m_metadata.value("album").toString();
+}
+
+QString MediaService::artist() const
+{
+    return m_metadata.value("artist").toString();
+}
+
+QUrl MediaService::arturl() const
+{
+    return m_metadata.value("arturl").toUrl();
+}
+
+int MediaService::audioBitrate() const
+{
+    return m_metadata.value("audio-bitrate").toInt();
+}
+
+int MediaService::audioSampleRate() const
+{
+    return m_metadata.value("audio-samplerate").toInt();
+}
+
+double MediaService::bpm() const
+{
+    return m_metadata.value("bpm").toDouble();
+}
+
+QString MediaService::comment() const
+{
+    return m_metadata.value("comment").toString();
+}
+
+QString MediaService::genre() const
+{
+    return m_metadata.value("genre").toString();
+}
+
+QUrl MediaService::location() const
+{
+    return m_metadata.value("location").toUrl();
+}
+
+qlonglong MediaService::mtime() const
+{
+    return m_metadata.value("mtime").toLongLong();
+}
+
+QString MediaService::performer() const
+{
+    return m_metadata.value("performer").toString();
+}
+
+qlonglong MediaService::time() const
+{
+    return m_metadata.value("time").toLongLong();
+}
+
+QString MediaService::title() const
+{
+    return m_metadata.value("title").toString();
+}
+
+int MediaService::trackNumber() const
+{
+    return m_metadata.value("tracknumber").toInt();
+}
+
+int MediaService::year() const
+{
+    return m_metadata.value("year").toInt();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

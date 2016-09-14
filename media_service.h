@@ -12,6 +12,23 @@ class MediaService : public QObject
     Q_PROPERTY(int caps READ caps NOTIFY capsChanged)
     Q_PROPERTY(bool valid READ isValid NOTIFY validChanged)
     Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
+    // Metadata
+    Q_PROPERTY(QString album READ album NOTIFY albumChanged)
+    Q_PROPERTY(QString artist READ artist NOTIFY artistChanged)
+    Q_PROPERTY(QUrl arturl READ arturl NOTIFY arturlChanged)
+    Q_PROPERTY(int audioBitrate READ audioBitrate NOTIFY audioBitrateChanged)
+    Q_PROPERTY(int audioSampleRate READ audioSampleRate NOTIFY audioSampleRateChanged)
+    Q_PROPERTY(double bpm READ bpm NOTIFY bpmChanged)
+    Q_PROPERTY(QString comment READ comment NOTIFY commentChanged)
+    Q_PROPERTY(QString genre READ genre NOTIFY genreChanged)
+    Q_PROPERTY(QUrl location READ location NOTIFY locationChanged)
+    Q_PROPERTY(qlonglong mtime READ mtime NOTIFY mtimeChanged)
+    Q_PROPERTY(QString performer READ performer NOTIFY performerChanged)
+    Q_PROPERTY(qlonglong time READ time NOTIFY timeChanged)
+    Q_PROPERTY(QString title READ title NOTIFY titleChanged)
+    Q_PROPERTY(int trackNumber READ trackNumber NOTIFY trackNumberChanged)
+    Q_PROPERTY(int year READ year NOTIFY yearChanged)
+
 public:
     MediaService(QObject *parent = nullptr);
 
@@ -26,6 +43,22 @@ public:
 
     int position() const;
     void setPosition(int);
+
+    QString album() const;
+    QString artist() const;
+    QUrl arturl() const;
+    int audioBitrate() const;
+    int audioSampleRate() const;
+    double bpm() const;
+    QString comment() const;
+    QString genre() const;
+    QUrl location() const;
+    qlonglong mtime() const;
+    QString performer() const;
+    qlonglong time() const;
+    QString title() const;
+    int trackNumber() const;
+    int year() const;
 
 public slots:
     void play();
@@ -54,6 +87,22 @@ signals:
     void validChanged(bool const&);
 
     void positionChanged(int);
+
+    void albumChanged(QString const&);
+    void artistChanged(QString const&);
+    void arturlChanged(QUrl const&);
+    void audioBitrateChanged(int const&);
+    void audioSampleRateChanged(int const&);
+    void bpmChanged(double const&);
+    void commentChanged(QString const&);
+    void genreChanged(QString const&);
+    void locationChanged(QUrl const&);
+    void mtimeChanged(qlonglong const&);
+    void performerChanged(QString const&);
+    void timeChanged(qlonglong const&);
+    void titleChanged(QString const&);
+    void trackNumberChanged(int const&);
+    void yearChanged(int const&);
 
 private slots:
     void setCaps(int);
