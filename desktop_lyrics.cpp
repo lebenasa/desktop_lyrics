@@ -66,11 +66,7 @@ void AppEngine::setCurrentLine(int mpos)
     if (it != end (m_lrcmap) && it->first - mpos > 1000)
         it = end(m_lrcmap);
     if (it == end(m_lrcmap))
-    {
         it = find_if(begin(m_lrcmap), end(m_lrcmap), pred);
-        if (it == end(m_lrcmap))
-            return;
-    }
     if (it != begin(m_lrcmap))
         --it;
     if (it->second != m_currentLine)

@@ -9,5 +9,6 @@ ApplicationWindow {
 
     LyricsViewer {
         id: lyrics_view
+        anchors.fill: parent
     }
 }

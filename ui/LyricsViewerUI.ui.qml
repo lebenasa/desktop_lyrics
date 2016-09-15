@@ -39,10 +39,10 @@ Item {
 
             Image {
                 id: mediaArt
-                sourceSize.width: 100
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillHeight: true
+                sourceSize.width: 120
                 fillMode: Image.PreserveAspectFit
-                Layout.maximumHeight: 100
-                Layout.maximumWidth: 100
                 source: "/tmp/clementine-art-r18373.jpg"
             }
             GridLayout {

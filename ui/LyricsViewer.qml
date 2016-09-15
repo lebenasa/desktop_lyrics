@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Dialogs 1.2
+import Qt.labs.settings 1.0
 
 LyricsViewerUI {
     id: root
@@ -69,5 +70,9 @@ LyricsViewerUI {
             mediaPosition.value = media.position / media.mtime;
             syncPosition = false;
         }
+    }
+
+    Settings {
+        property alias lastLyricsFolder: dgOpenLyrics.folder
     }
 }
