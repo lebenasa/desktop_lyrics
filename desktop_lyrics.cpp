@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include "file_search.h"
 #include "desktop_lyrics.h"
 using namespace std;
 
@@ -76,3 +77,96 @@ void AppEngine::setCurrentLine(int mpos)
         m_lastlrcln = it;
     }
 }
+
+QUrl AppEngine::lyricsDir() const
+{
+    return m_lyricsDir;
+}
+
+void AppEngine::setLyricsDir(const QUrl& val)
+{
+    if (val != m_lyricsDir)
+    {
+        m_lyricsDir = val;
+        emit lyricsDirChanged(val);
+        refresh_db();
+    }
+}
+
+void AppEngine::refresh_db()
+{
+    QDir ld{ m_lyricsDir.toLocalFile() };
+    QStringList nfs;
+    nfs << "*.lrc" << "*.txt";
+    m_lyricsDirFiles = ld.entryInfoList(nfs, QDir::Files | QDir::NoDotAndDotDot | QDir::Readable | QDir::CaseSensitive,
+                                        QDir::Name);
+}
+
+QList<QObject *> AppEngine::search_lyrics(const QString &artist, const QString &title)
+{
+    QList<QObject*> res;
+    for (const auto &fi : m_lyricsDirFiles)
+    {
+        auto score = lyrics::match_score(fi.fileName(), artist, title);
+        if (score >= 0.5)
+        {
+            auto li = new LyricsMatch(this);
+            li->setScore(score);
+            li->setName(fi.fileName());
+            li->setPath(QUrl::fromLocalFile(fi.filePath()));
+            res.push_back(qobject_cast<QObject*>(li));
+        }
+    }
+    sort(res.begin(), res.end(),
+         [](QObject *v1, QObject *v2) {
+        return v1->property("score").toDouble() > v2->property("score").toDouble(); });
+    return res;
+}
+
+LyricsMatch::LyricsMatch(QObject *parent)
+    : QObject{ parent }
+{
+}
+
+QString LyricsMatch::name() const
+{
+    return m_name;
+}
+
+void LyricsMatch::setName(const QString& val)
+{
+    if (val != m_name)
+    {
+        m_name = val;
+        emit nameChanged(val);
+    }
+}
+
+QUrl LyricsMatch::path() const
+{
+    return m_path;
+}
+
+void LyricsMatch::setPath(const QUrl& val)
+{
+    if (val != m_path)
+    {
+        m_path = val;
+        emit pathChanged(val);
+    }
+}
+
+double LyricsMatch::score() const
+{
+    return m_score;
+}
+
+void LyricsMatch::setScore(double val)
+{
+    if (val != m_score)
+    {
+        m_score = val;
+        emit scoreChanged(val);
+    }
+}
+

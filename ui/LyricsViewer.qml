@@ -1,4 +1,5 @@
 import QtQuick 2.4
+import QtQuick.Controls 2.0
 import QtQuick.Dialogs 1.2
 import Qt.labs.settings 1.0
 
@@ -16,6 +17,19 @@ LyricsViewerUI {
             media.position = mediaPosition.value * media.mtime;
     }
     btnOpenLyrics.onClicked: dgOpenLyrics.open()
+
+    txLyricsFolder.text: dgOpenLyrics.folder
+
+    searchView.delegate: ItemDelegate {
+        text: modelData.name
+        width: parent.width
+        onClicked: app.lyricsFile = modelData.path
+    }
+    searchView.onModelChanged: {
+        if (searchView.model.length > 0) {
+            app.lyricsFile = searchView.model[0].path;
+        }
+    }
 
     FileDialog {
         id: dgOpenLyrics
@@ -63,6 +77,18 @@ LyricsViewerUI {
         value: app.currentLine
     }
 
+    Binding {
+        target: app
+        property: "lyricsDir"
+        value: dgOpenLyrics.folder
+    }
+
+    Binding {
+        target: searchView
+        property: "model"
+        value: app.search_lyrics(media.artist, media.title)
+    }
+
     Connections {
         target: media
         onPositionChanged: {
@@ -74,5 +100,9 @@ LyricsViewerUI {
 
     Settings {
         property alias lastLyricsFolder: dgOpenLyrics.folder
+    }
+
+    Component.onCompleted: {
+        searchView.model = app.search_lyrics(media.artist, media.title);
     }
 }

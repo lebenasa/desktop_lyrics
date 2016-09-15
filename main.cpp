@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app{ argc, argv };
 
-    QQuickStyle::setStyle("Universal");
+    QQuickStyle::setStyle("Material");
 
     MediaService service;
     AppEngine lrcapp;

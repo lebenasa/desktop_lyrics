@@ -5,6 +5,8 @@ import QtQuick.Layouts 1.3
 Item {
     width: 800
     height: 600
+    property alias searchView: searchView
+    property alias txLyricsFolder: txLyricsFolder
     property alias lbGenre: lbGenre
     property alias lbAlbum: lbAlbum
     property alias lbArtist: lbArtist
@@ -36,6 +38,7 @@ Item {
             Layout.preferredHeight: 200
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+
 
             Image {
                 id: mediaArt
@@ -104,6 +107,16 @@ Item {
                     text: qsTr("")
                 }
             }
+            Label {
+                id: lyricsArea
+                text: qsTr("Lyrics")
+                Layout.fillHeight: true
+                Layout.columnSpan: 3
+                verticalAlignment: Text.AlignVCenter
+                font.pointSize: 14
+                horizontalAlignment: Text.AlignHCenter
+                Layout.fillWidth: true
+            }
             Slider {
                 id: mediaPosition
                 Layout.preferredHeight: 30
@@ -152,21 +165,37 @@ Item {
                     id: item2
                     Layout.fillWidth: true
                 }
-                Button {
-                    id: btnOpenLyrics
-                    text: qsTr("Open Lyrics")
-                }
             }
         }
 
-        Label {
-            id: lyricsArea
-            text: qsTr("Lyrics")
-            verticalAlignment: Text.AlignVCenter
-            font.pointSize: 12
-            horizontalAlignment: Text.AlignHCenter
+        RowLayout {
+            id: rowLayout2
+            width: 100
+            height: 100
+
+            Label {
+                id: label1
+                text: qsTr("Lyrics Folder")
+            }
+
+            TextField {
+                id: txLyricsFolder
+                text: qsTr("Text Field")
+                Layout.fillWidth: true
+            }
+
+            Button {
+                id: btnOpenLyrics
+                text: qsTr("Browse Lyrics")
+            }
+        }
+
+        ListView {
+            id: searchView
+            clip: true
             Layout.fillHeight: true
             Layout.fillWidth: true
+            ScrollBar.vertical: ScrollBar{ }
         }
     }
 }

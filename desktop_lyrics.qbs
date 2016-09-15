@@ -16,6 +16,8 @@ CppApplication {
         "main.cpp",
         "media_service.cpp",
         "media_service.h",
+        "file_search.h",
+        "file_search.cpp",
     ]
 
     Group {
