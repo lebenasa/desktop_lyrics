@@ -16,8 +16,9 @@ void LyricsWindow::mousePressEvent(QMouseEvent *ev)
         last_y = ev->globalY();
         m_pressed = true;
         ev->accept();
-        return;
     }
+    else if (ev->button() == Qt::RightButton)
+        emit openContextMenu(ev->pos());
     QQuickWindow::mousePressEvent(ev);
 }
 
@@ -31,7 +32,6 @@ void LyricsWindow::mouseMoveEvent(QMouseEvent *ev)
         last_x = ev->globalX();
         last_y = ev->globalY();
         ev->accept();
-        return;
     }
     QQuickWindow::mouseMoveEvent(ev);
 }

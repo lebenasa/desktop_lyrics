@@ -20,12 +20,8 @@ int main(int argc, char *argv[])
     AppEngine lrcapp;
     lrcapp.setMedia(&service);
 
-    QQmlApplicationEngine engine;
-    auto ctx = engine.rootContext();
-    ctx->setContextProperty("media", &service);
-    ctx->setContextProperty("app", &lrcapp);
-    engine.load("./ui/CompactViewer.qml");
-    engine.load("./ui/main.qml");
+    lrcapp.loadMainUI();
+    lrcapp.loadCompactUI();
 
     return app.exec();
 }

@@ -9,7 +9,6 @@ ApplicationWindow {
     width: 800
     height: 600
     visible: true
-    flags: Qt.WindowStaysOnTopHint
 
     Material.theme: Material.Dark
     Material.accent: Material.Indigo
@@ -19,6 +18,11 @@ ApplicationWindow {
         anchors.fill: parent
         focus: true
         window: root
+    }
+
+    Connections {
+        target: app
+        onReloadMainUI: root.visible = true
     }
 
     Settings {

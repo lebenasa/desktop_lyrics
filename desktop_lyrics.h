@@ -34,7 +34,7 @@ private:
     double m_score;
 };
 
-class AppEngine : public QQuickItem
+class AppEngine : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(MediaService* media READ media WRITE setMedia NOTIFY mediaChanged)
@@ -42,7 +42,7 @@ class AppEngine : public QQuickItem
     Q_PROPERTY(QString currentLine READ currentLine NOTIFY currentLineChanged)
     Q_PROPERTY(QUrl lyricsDir READ lyricsDir WRITE setLyricsDir NOTIFY lyricsDirChanged)
 public:
-    AppEngine(QQuickItem *parent = nullptr);
+    AppEngine(QObject *parent = nullptr);
 
     MediaService* media() const;
     void setMedia(MediaService *val);
@@ -57,12 +57,17 @@ public:
 
 public slots:
     QList<QObject*> search_lyrics(const QString &artist, const QString &title);
+    void loadMainUI();
+    void loadCompactUI();
 
 signals:
     void mediaChanged(MediaService*);
     void lyricsFileChanged(QUrl const&);
     void currentLineChanged(QString const&);
     void lyricsDirChanged(QUrl const&);
+
+    void reloadMainUI();
+    void reloadCompactUI();
 
 private:
     MediaService* m_media;
@@ -72,6 +77,10 @@ private:
     QString m_currentLine;
     QUrl m_lyricsDir;
     QFileInfoList m_lyricsDirFiles;
+
+    QQmlApplicationEngine m_engine;
+    bool m_mainUILoaded = false;
+    bool m_compactUILoaded = false;
 
     void update_lyrics();
     void refresh_db();

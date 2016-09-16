@@ -29,9 +29,11 @@ LyricsViewerUI {
         onClicked: app.lyricsFile = modelData.path
     }
     searchView.onModelChanged: {
-        if (searchView.model.length > 0) {
+        if (searchView.model.length > 0 && searchView.model[0].score >= 0.6) {
             app.lyricsFile = searchView.model[0].path;
         }
+        else
+            app.lyricsFile = "";
     }
 
     FileDialog {
@@ -103,12 +105,6 @@ LyricsViewerUI {
         }
     }
 
-//    CompactViewer {
-//        id: compact
-//        x: root.window.x
-//        y: root.window.y
-//    }
-
     topLayout.onVisibleChanged: {
         window.height += topLayout.visible ? 100 : -100;
     }
@@ -138,8 +134,8 @@ LyricsViewerUI {
             searchView.visible = !searchView.visible;
             bottomLayout.visible = !bottomLayout.visible;
         }
-//        else if (event.key === Qt.Key_F5)
-//            compact.visible = true;
+        else if (event.key === Qt.Key_F5)
+            app.loadCompactUI();
     }
 
     Settings {

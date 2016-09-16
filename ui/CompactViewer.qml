@@ -21,12 +21,18 @@ LyricsWindow {
 
         Pane {
             anchors.fill: parent
+            focus: true
             Label {
                 anchors.fill: parent
                 text: app.currentLine
                 font.pointSize: 12
                 horizontalAlignment: Label.AlignHCenter
                 verticalAlignment: Label.AlignVCenter
+            }
+
+            Keys.onPressed: {
+                if (event.key === Qt.Key_F5)
+                    app.reloadMainUI();
             }
         }
 
@@ -64,6 +70,11 @@ LyricsWindow {
             height: 5
             cursorShape: Qt.SizeVerCursor
         }
+    }
+
+    Connections {
+        target: app
+        onReloadCompactUI: root.visible = true
     }
 
     Settings {

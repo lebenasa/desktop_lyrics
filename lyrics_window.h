@@ -11,6 +11,9 @@ class LyricsWindow : public QQuickWindow
 public:
     LyricsWindow(QWindow *parent = nullptr);
 
+signals:
+    void openContextMenu(const QPoint &pos);
+
 protected:
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);

@@ -4,9 +4,10 @@
 #include "desktop_lyrics.h"
 using namespace std;
 
-AppEngine::AppEngine(QQuickItem *parent)
-    : QQuickItem{ parent }, m_media{ nullptr }, m_lastlrcln{ begin(m_lrcmap) }
+AppEngine::AppEngine(QObject *parent)
+    : QObject{ parent }, m_media{ nullptr }, m_lastlrcln{ begin(m_lrcmap) }
 {
+    m_engine.rootContext()->setContextProperty("app", this);
 }
 
 MediaService* AppEngine::media() const
@@ -16,10 +17,11 @@ MediaService* AppEngine::media() const
 
 void AppEngine::setMedia(MediaService *val)
 {
-    if (val != m_media)
+    if (val != m_media && val)
     {
         m_media = val;
         connect(val, &MediaService::positionChanged, this, &AppEngine::setCurrentLine);
+        m_engine.rootContext()->setContextProperty("media", val);
         emit mediaChanged(val);
     }
 }
@@ -41,17 +43,19 @@ void AppEngine::setLyricsFile(const QUrl& val)
 
 void AppEngine::update_lyrics()
 {
-    QFile lf{ lyricsFile().toLocalFile() };
-    if (lf.open(QFile::ReadOnly | QFile::Text))
+    if (QFile::exists(lyricsFile().toLocalFile()))
     {
-        QTextStream lt{ &lf };
-        auto ls = lt.readAll().split("\n");
-        m_lrcmap = lyrics::parse_all(ls);
-        m_lastlrcln = begin(m_lrcmap);
+        QFile lf{ lyricsFile().toLocalFile() };
+        if (lf.open(QFile::ReadOnly | QFile::Text))
+        {
+            QTextStream lt{ &lf };
+            auto ls = lt.readAll().split("\n");
+            m_lrcmap = lyrics::parse_all(ls);
+            m_lastlrcln = begin(m_lrcmap);
+        }
     }
     else
     {
-        qWarning() << "Failed to open" << lyricsFile();
     }
 }
 
@@ -123,6 +127,28 @@ QList<QObject *> AppEngine::search_lyrics(const QString &artist, const QString &
     return res;
 }
 
+void AppEngine::loadMainUI()
+{
+    if (!m_mainUILoaded)
+    {
+        m_engine.load("./ui/main.qml");
+        m_mainUILoaded = true;
+    }
+    else
+        emit reloadMainUI();
+}
+
+void AppEngine::loadCompactUI()
+{
+    if (!m_compactUILoaded)
+    {
+        m_engine.load("./ui/CompactViewer.qml");
+        m_compactUILoaded = true;
+    }
+    else
+        emit reloadCompactUI();
+}
+
 LyricsMatch::LyricsMatch(QObject *parent)
     : QObject{ parent }
 {
@@ -169,4 +195,3 @@ void LyricsMatch::setScore(double val)
         emit scoreChanged(val);
     }
 }
-
