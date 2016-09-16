@@ -13,6 +13,8 @@ CppApplication {
         "desktop_lyrics.h",
         "lyrics_parser.cpp",
         "lyrics_parser.h",
+        "lyrics_window.cpp",
+        "lyrics_window.h",
         "main.cpp",
         "media_service.cpp",
         "media_service.h",
@@ -27,6 +29,7 @@ CppApplication {
 
     Group {
         files: [
+            "ui/CompactViewer.qml",
             "ui/LyricsViewer.qml",
             "ui/LyricsViewerUI.ui.qml",
             "ui/main.qml",

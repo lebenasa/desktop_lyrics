@@ -5,6 +5,9 @@ import QtQuick.Layouts 1.3
 Item {
     width: 800
     height: 600
+    property alias topLayout: topLayout
+    property alias controlLayout: controlLayout
+    property alias bottomLayout: bottomLayout
     property alias searchView: searchView
     property alias txLyricsFolder: txLyricsFolder
     property alias lbGenre: lbGenre
@@ -32,10 +35,10 @@ Item {
 
 
         GridLayout {
-            id: gridLayout1
-            Layout.maximumHeight: 200
+            id: topLayout
+            Layout.maximumHeight: 100
             columns: 3
-            Layout.preferredHeight: 200
+            Layout.preferredHeight: 100
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
 
@@ -107,69 +110,84 @@ Item {
                     text: qsTr("")
                 }
             }
-            Label {
-                id: lyricsArea
-                text: qsTr("Lyrics")
-                Layout.fillHeight: true
-                Layout.columnSpan: 3
-                verticalAlignment: Text.AlignVCenter
-                font.pointSize: 14
-                horizontalAlignment: Text.AlignHCenter
-                Layout.fillWidth: true
-            }
-            Slider {
-                id: mediaPosition
-                Layout.preferredHeight: 30
-                Layout.fillWidth: true
-                Layout.columnSpan: 3
-                value: 0.5
-            }
-            RowLayout {
-                id: rowLayout1
-                Layout.preferredHeight: 40
-                Layout.fillWidth: true
-                Layout.columnSpan: 3
+        }
 
 
 
+        Label {
+            id: lyricsArea
+            text: qsTr("Lyrics")
+            Layout.maximumHeight: 60
+            Layout.fillHeight: true
+            rightPadding: 10
+            leftPadding: 10
+            wrapMode: Text.WordWrap
+            Layout.columnSpan: 3
+            verticalAlignment: Text.AlignVCenter
+            font.pointSize: 14
+            horizontalAlignment: Text.AlignHCenter
+            Layout.fillWidth: true
+        }
 
-
-
-
-
-                Item {
-                    id: item1
-                    Layout.fillWidth: true
-                }
-                Button {
-                    id: btnPrev
-                    text: qsTr("Prev")
-                }
-                Button {
-                    id: btnPlay
-                    text: qsTr("Play")
-                }
-                Button {
-                    id: btnPause
-                    text: qsTr("Pause")
-                }
-                Button {
-                    id: btnStop
-                    text: qsTr("Stop")
-                }
-                Button {
-                    id: btnNext
-                    text: qsTr("Next")
-                }
-                Item {
-                    id: item2
-                    Layout.fillWidth: true
-                }
-            }
+        Slider {
+            id: mediaPosition
+            Layout.preferredHeight: 30
+            Layout.fillWidth: true
+            Layout.columnSpan: 3
+            value: 0.5
         }
 
         RowLayout {
-            id: rowLayout2
+            id: controlLayout
+            Layout.preferredHeight: 40
+            Layout.fillWidth: true
+            Layout.columnSpan: 3
+
+
+
+
+
+
+
+
+            Item {
+                id: item1
+                Layout.fillWidth: true
+            }
+            Button {
+                id: btnPrev
+                text: qsTr("Prev")
+            }
+            Button {
+                id: btnPlay
+                text: qsTr("Play")
+            }
+            Button {
+                id: btnPause
+                text: qsTr("Pause")
+            }
+            Button {
+                id: btnStop
+                text: qsTr("Stop")
+            }
+            Button {
+                id: btnNext
+                text: qsTr("Next")
+            }
+            Item {
+                id: item2
+                Layout.fillWidth: true
+            }
+        }
+        ListView {
+            id: searchView
+            clip: true
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            ScrollBar.vertical: ScrollBar{ }
+        }
+        RowLayout {
+            id: bottomLayout
             width: 100
             height: 100
 
@@ -188,14 +206,6 @@ Item {
                 id: btnOpenLyrics
                 text: qsTr("Browse Lyrics")
             }
-        }
-
-        ListView {
-            id: searchView
-            clip: true
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            ScrollBar.vertical: ScrollBar{ }
         }
     }
 }

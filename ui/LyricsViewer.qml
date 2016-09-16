@@ -1,11 +1,14 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Dialogs 1.2
+import QtQuick.Window 2.0
 import Qt.labs.settings 1.0
 
 LyricsViewerUI {
     id: root
+    focus: true
     property bool syncPosition: false
+    property Window window
 
     btnPrev.onClicked: media.prev()
     btnPlay.onClicked: media.play()
@@ -86,7 +89,9 @@ LyricsViewerUI {
     Binding {
         target: searchView
         property: "model"
-        value: app.search_lyrics(media.artist, media.title)
+        value: app.search_lyrics(
+                   media.artist.length > 0 ? media.artist : media.location,
+                   media.title.length > 0 ? media.title : media.location)
     }
 
     Connections {
@@ -98,11 +103,52 @@ LyricsViewerUI {
         }
     }
 
+//    CompactViewer {
+//        id: compact
+//        x: root.window.x
+//        y: root.window.y
+//    }
+
+    topLayout.onVisibleChanged: {
+        window.height += topLayout.visible ? 100 : -100;
+    }
+    mediaPosition.onVisibleChanged: {
+        window.height += mediaPosition.visible ? 100 : -100;
+    }
+    controlLayout.onVisibleChanged: {
+        window.height += controlLayout.visible ? 80 : -80;
+    }
+    searchView.onVisibleChanged: {
+        window.height += searchView.visible ? 200 : -200;
+    }
+    bottomLayout.onVisibleChanged: {
+        window.height += bottomLayout.visible ? 80 : -80;
+    }
+
+    Keys.onPressed: {
+        if (event.key === Qt.Key_F1)
+            topLayout.visible = !topLayout.visible;
+        else if (event.key === Qt.Key_F2)
+            lyricsArea.visible = !lyricsArea.visible;
+        else if (event.key === Qt.Key_F3) {
+            mediaPosition.visible = !mediaPosition.visible;
+            controlLayout.visible = !controlLayout.visible;
+        }
+        else if (event.key === Qt.Key_F4) {
+            searchView.visible = !searchView.visible;
+            bottomLayout.visible = !bottomLayout.visible;
+        }
+//        else if (event.key === Qt.Key_F5)
+//            compact.visible = true;
+    }
+
     Settings {
         property alias lastLyricsFolder: dgOpenLyrics.folder
     }
 
     Component.onCompleted: {
-        searchView.model = app.search_lyrics(media.artist, media.title);
+        searchView.model = app.search_lyrics(
+                   media.artist.length > 0 ? media.artist : media.location,
+                   media.title.length > 0 ? media.title : media.location);
     }
 }
