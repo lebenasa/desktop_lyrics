@@ -51,6 +51,12 @@ void AppEngine::update_lyrics()
             QTextStream lt{ &lf };
             auto ls = lt.readAll().split("\n");
             m_lrcmap = lyrics::parse_all(ls);
+            auto ioffset = m_lrcmap.find(-1);
+            if (ioffset != end(m_lrcmap))
+            {
+                setOffset(ioffset->second.toInt());
+                m_lrcmap.erase(ioffset);
+            }
             m_lastlrcln = begin(m_lrcmap);
         }
     }
@@ -73,6 +79,7 @@ void AppEngine::setCurrentLine(int mpos)
         m_currentLine = "";
         emit currentLineChanged("");
     }
+    mpos += offset();
     auto pred = [mpos](pair<int, QString> const &v) { return v.first > mpos; };
     auto it = find_if(m_lastlrcln, end(m_lrcmap), pred);
     if (it != end (m_lrcmap) && it->first - mpos > 1000)
@@ -154,6 +161,20 @@ void AppEngine::loadCompactUI()
     }
     else
         emit reloadCompactUI();
+}
+
+int AppEngine::offset() const
+{
+    return m_offset;
+}
+
+void AppEngine::setOffset(const int& val)
+{
+    if (val != m_offset)
+    {
+        m_offset = val;
+        emit offsetChanged(val);
+    }
 }
 
 LyricsMatch::LyricsMatch(QObject *parent)

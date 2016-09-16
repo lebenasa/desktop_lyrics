@@ -41,6 +41,7 @@ class AppEngine : public QObject
     Q_PROPERTY(QUrl lyricsFile READ lyricsFile WRITE setLyricsFile NOTIFY lyricsFileChanged)
     Q_PROPERTY(QString currentLine READ currentLine NOTIFY currentLineChanged)
     Q_PROPERTY(QUrl lyricsDir READ lyricsDir WRITE setLyricsDir NOTIFY lyricsDirChanged)
+    Q_PROPERTY(int offset READ offset WRITE setOffset NOTIFY offsetChanged)
 public:
     AppEngine(QObject *parent = nullptr);
 
@@ -54,6 +55,9 @@ public:
 
     QUrl lyricsDir() const;
     void setLyricsDir(QUrl const& val);
+
+    int offset() const;
+    void setOffset(int const& val);
 
 public slots:
     QList<QObject*> search_lyrics(const QString &artist, const QString &title);
@@ -69,6 +73,8 @@ signals:
     void reloadMainUI();
     void reloadCompactUI();
 
+    void offsetChanged(int const&);
+
 private:
     MediaService* m_media;
     QUrl m_lyricsFile;
@@ -81,6 +87,7 @@ private:
     QQmlApplicationEngine m_engine;
     bool m_mainUILoaded = false;
     bool m_compactUILoaded = false;
+    int m_offset;
 
     void update_lyrics();
     void refresh_db();

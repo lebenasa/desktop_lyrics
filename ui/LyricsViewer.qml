@@ -8,6 +8,7 @@ LyricsViewerUI {
     id: root
     focus: true
     property bool syncPosition: false
+    property bool syncOffset: false
     property Window window
 
     btnPrev.onClicked: media.prev()
@@ -20,8 +21,13 @@ LyricsViewerUI {
             media.position = mediaPosition.value * media.mtime;
     }
     btnOpenLyrics.onClicked: dgOpenLyrics.open()
+    sbOffset.onValueChanged: {
+        if (!syncOffset)
+            app.offset = sbOffset.value
+    }
 
     txLyricsFolder.text: dgOpenLyrics.folder
+    sbOffset.editable: false
 
     searchView.delegate: ItemDelegate {
         text: modelData.name
@@ -102,6 +108,15 @@ LyricsViewerUI {
             syncPosition = true;
             mediaPosition.value = media.position / media.mtime;
             syncPosition = false;
+        }
+    }
+
+    Connections {
+        target: app
+        onOffsetChanged: {
+            syncOffset = true;
+            sbOffset.value = app.offset;
+            syncOffset = false;
         }
     }
 

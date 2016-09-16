@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.3
 Item {
     width: 800
     height: 600
+    property alias sbOffset: sbOffset
     property alias topLayout: topLayout
     property alias controlLayout: controlLayout
     property alias bottomLayout: bottomLayout
@@ -56,7 +57,6 @@ Item {
                 columns: 2
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.columnSpan: 2
 
                 Label {
                     id: lbTitle
@@ -108,6 +108,30 @@ Item {
                 Label {
                     id: label7
                     text: qsTr("")
+                }
+            }
+
+            ColumnLayout {
+                id: columnLayout2
+                Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+                spacing: 0
+                Layout.fillHeight: true
+
+                Label {
+                    id: label2
+                    text: qsTr("Offset")
+                    font.pointSize: 6
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                SpinBox {
+                    id: sbOffset
+                    scale: 0.7
+                    stepSize: 100
+                    to: 100000
+                    from: -100000
                 }
             }
         }

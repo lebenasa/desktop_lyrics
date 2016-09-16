@@ -32,9 +32,20 @@ int lyrics::to_ms(const QString &time)
 lyrics_map lyrics::parse_all(const QStringList &lyrics)
 {
     lyrics_map res;
-    for (const auto &line : lyrics)
+    auto i = lyrics.begin();
+    for (; parse_line(*i).empty(); ++i)
     {
-        auto m = parse_line(line);
+        if (i->contains("[offset:"))
+        {
+            QRegularExpression re{ R"reg(\d+)reg" };
+            auto match = re.match(*i);
+            if (match.hasMatch())
+                res[-1] = match.captured(0);
+        }
+    }
+    for (--i; i != lyrics.end(); ++i)
+    {
+        auto m = parse_line(*i);
         std::move(begin(m), end(m), std::inserter(res, end(res)));
     }
     return res;
