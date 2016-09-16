@@ -56,6 +56,8 @@ void AppEngine::update_lyrics()
     }
     else
     {
+        m_lrcmap.clear();
+        m_lastlrcln = begin(m_lrcmap);
     }
 }
 
@@ -66,6 +68,11 @@ QString AppEngine::currentLine() const
 
 void AppEngine::setCurrentLine(int mpos)
 {
+    if (m_lrcmap.empty())
+    {
+        m_currentLine = "";
+        emit currentLineChanged("");
+    }
     auto pred = [mpos](pair<int, QString> const &v) { return v.first > mpos; };
     auto it = find_if(m_lastlrcln, end(m_lrcmap), pred);
     if (it != end (m_lrcmap) && it->first - mpos > 1000)

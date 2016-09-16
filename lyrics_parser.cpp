@@ -16,6 +16,7 @@ lyrics_map lyrics::parse_line(const QString &line)
     }
 
     auto lyric = line.mid(match.capturedEnd(1) + 1);
+    lyric.remove(QRegularExpression{R"reg(<\d\d:\d\d.\d\d>)reg"});
     for (auto i = begin(res); i != end(res); ++i)
         i->second = lyric;
 
