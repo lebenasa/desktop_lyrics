@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ui/CompactViewer.qml</file>
+        <file>ui/LyricsViewer.qml</file>
+        <file>ui/LyricsViewerUI.ui.qml</file>
+        <file>ui/main.qml</file>
+    </qresource>
+</RCC>

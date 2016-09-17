@@ -11,6 +11,7 @@ CppApplication {
     files: [
         "desktop_lyrics.cpp",
         "desktop_lyrics.h",
+        "desktop_lyrics.qrc",
         "lyrics_parser.cpp",
         "lyrics_parser.h",
         "lyrics_window.cpp",
@@ -21,6 +22,8 @@ CppApplication {
         "file_search.h",
         "file_search.cpp",
     ]
+
+    qbs.installRoot: "/home/leben/bin/"
 
     Group {
         fileTagsFilter: product.type

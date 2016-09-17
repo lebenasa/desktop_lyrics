@@ -78,6 +78,7 @@ void AppEngine::setCurrentLine(int mpos)
     {
         m_currentLine = "";
         emit currentLineChanged("");
+        return;
     }
     mpos += offset();
     auto pred = [mpos](pair<int, QString> const &v) { return v.first > mpos; };
@@ -145,7 +146,7 @@ void AppEngine::loadMainUI()
 {
     if (!m_mainUILoaded)
     {
-        m_engine.load("./ui/main.qml");
+        m_engine.load(QUrl{"qrc:///ui/main.qml"});
         m_mainUILoaded = true;
     }
     else
@@ -156,7 +157,7 @@ void AppEngine::loadCompactUI()
 {
     if (!m_compactUILoaded)
     {
-        m_engine.load("./ui/CompactViewer.qml");
+        m_engine.load(QUrl{"qrc:///ui/CompactViewer.qml"});
         m_compactUILoaded = true;
     }
     else
