@@ -38,6 +38,8 @@ void AppEngine::setLyricsFile(const QUrl& val)
         m_lyricsFile = val;
         emit lyricsFileChanged(val);
         update_lyrics();
+        if (m_media)
+            store_chosen(m_media->location(), val);
     }
 }
 
@@ -51,14 +53,14 @@ void AppEngine::update_lyrics()
             QTextStream lt{ &lf };
             auto ls = lt.readAll().split("\n");
             m_lrcmap = lyrics::parse_all(ls);
-            auto ioffset = m_lrcmap.find(-1);
-            if (ioffset != end(m_lrcmap))
-            {
-                setOffset(ioffset->second.toInt());
-                m_lrcmap.erase(ioffset);
-            }
-            m_lastlrcln = begin(m_lrcmap);
         }
+        auto ioffset = m_lrcmap.find(-1);
+        if (ioffset != end(m_lrcmap))
+        {
+            setOffset(ioffset->second.toInt());
+            m_lrcmap.erase(ioffset);
+        }
+        m_lastlrcln = begin(m_lrcmap);
     }
     else
     {
@@ -124,15 +126,22 @@ void AppEngine::refresh_db()
 QList<QObject *> AppEngine::search_lyrics(const QString &artist, const QString &title)
 {
     QList<QObject*> res;
+    if (m_media)
+    {
+        auto last_chosen = load_chosen(m_media->location());
+        if (!last_chosen.isEmpty())
+        {
+            QFileInfo fi{ last_chosen.toLocalFile() };
+            auto li = new LyricsMatch(fi.fileName(), last_chosen, 2.0, this);
+            res.push_back(li);
+        }
+    }
     for (const auto &fi : m_lyricsDirFiles)
     {
         auto score = lyrics::match_score(fi.fileName(), artist, title);
         if (score >= 0.5)
         {
-            auto li = new LyricsMatch(this);
-            li->setScore(score);
-            li->setName(fi.fileName());
-            li->setPath(QUrl::fromLocalFile(fi.filePath()));
+            auto li = new LyricsMatch(fi.fileName(), QUrl::fromLocalFile(fi.filePath()), score, this);
             res.push_back(qobject_cast<QObject*>(li));
         }
     }
@@ -178,8 +187,33 @@ void AppEngine::setOffset(const int& val)
     }
 }
 
+void AppEngine::store_chosen(const QUrl &music, const QUrl &lyrics)
+{
+    QSettings s("leben", "desktop_lyrics", this);
+    s.beginGroup(music.toLocalFile());
+    s.setValue("lyrics", lyrics.toLocalFile());
+    s.endGroup();
+}
+
+QUrl AppEngine::load_chosen(const QUrl &music)
+{
+    QSettings s("leben", "desktop_lyrics", this);
+    s.beginGroup(music.toLocalFile());
+    auto lrc = s.value("lyrics").toString();
+    s.endGroup();
+    if (lrc.isEmpty())
+        return QUrl{ };
+    return QUrl::fromLocalFile(lrc);
+}
+
 LyricsMatch::LyricsMatch(QObject *parent)
     : QObject{ parent }
+{
+}
+
+LyricsMatch::LyricsMatch(const QString &name, const QUrl &path,
+                         double score, QObject *parent)
+    : QObject{ parent }, m_name{ name }, m_path{ path }, m_score{ score }
 {
 }
 

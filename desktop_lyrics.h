@@ -15,6 +15,8 @@ class LyricsMatch : public QObject
     Q_PROPERTY(double score READ score WRITE setScore NOTIFY scoreChanged)
 public:
     LyricsMatch(QObject *parent = nullptr);
+    LyricsMatch(const QString &name, const QUrl &path,
+                double score, QObject *parent = nullptr);
 
     QString name() const;
     void setName(QString const& val);
@@ -91,6 +93,9 @@ private:
 
     void update_lyrics();
     void refresh_db();
+
+    void store_chosen(const QUrl &music, const QUrl &lyrics);
+    QUrl load_chosen(const QUrl &music);
 
 private slots:
     void setCurrentLine(int mpos);
