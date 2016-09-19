@@ -96,6 +96,7 @@ private:
 
     void store_chosen(const QUrl &music, const QUrl &lyrics);
     QUrl load_chosen(const QUrl &music);
+    void change_offset(const QUrl &lyrics, int offset);
 
 private slots:
     void setCurrentLine(int mpos);

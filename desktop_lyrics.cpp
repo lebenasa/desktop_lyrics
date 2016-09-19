@@ -183,6 +183,10 @@ void AppEngine::setOffset(const int& val)
     if (val != m_offset)
     {
         m_offset = val;
+        if (m_media)
+        {
+            change_offset(load_chosen(m_media->location()), val);
+        }
         emit offsetChanged(val);
     }
 }
@@ -204,6 +208,12 @@ QUrl AppEngine::load_chosen(const QUrl &music)
     if (lrc.isEmpty())
         return QUrl{ };
     return QUrl::fromLocalFile(lrc);
+}
+
+void AppEngine::change_offset(const QUrl &lyrics, int offset)
+{
+    Q_UNUSED(lyrics);
+    Q_UNUSED(offset);
 }
 
 LyricsMatch::LyricsMatch(QObject *parent)
