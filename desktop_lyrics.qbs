@@ -23,7 +23,7 @@ CppApplication {
         "file_search.cpp",
     ]
 
-    qbs.installRoot: "/home/leben/bin/"
+//    qbs.installRoot: "/home/leben/bin/"
 
     Group {
         fileTagsFilter: product.type

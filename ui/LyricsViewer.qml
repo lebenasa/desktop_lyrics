@@ -4,6 +4,9 @@ import QtQuick.Dialogs 1.2
 import QtQuick.Window 2.0
 import Qt.labs.settings 1.0
 
+import com.leben.fileinfo 1.0
+import com.leben.appsettings 1.0
+
 LyricsViewerUI {
     id: root
     focus: true
