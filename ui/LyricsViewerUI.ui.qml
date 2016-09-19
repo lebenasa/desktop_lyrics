@@ -54,6 +54,7 @@ Item {
             }
             GridLayout {
                 id: mediaInfoLayout
+                clip: true
                 columns: 2
                 Layout.fillHeight: true
                 Layout.fillWidth: true
@@ -61,6 +62,7 @@ Item {
                 Label {
                     id: lbTitle
                     text: qsTr("Title")
+                    clip: true
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 15
                     font.bold: true
@@ -78,6 +80,8 @@ Item {
                 Label {
                     id: lbArtist
                     text: qsTr("Artist")
+                    Layout.fillHeight: true
+                    clip: true
                     font.bold: true
                     font.pointSize: 12
                     Layout.fillWidth: true
@@ -91,6 +95,7 @@ Item {
                 Label {
                     id: lbAlbum
                     text: qsTr("Album")
+                    clip: true
                     Layout.fillWidth: true
                 }
 
@@ -102,6 +107,7 @@ Item {
                 Label {
                     id: lbGenre
                     text: qsTr("Genre")
+                    clip: true
                     Layout.fillWidth: true
                 }
 
