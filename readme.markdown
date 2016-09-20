@@ -19,10 +19,12 @@ that purpose, you would have to search the lyrics and sync it by yourself
 
 ## Requirements
 For running the app, you would need:
+
 1. Clementine, for actually playing musics. Other players are not supported yet.
 2. Qt libraries >= 5.7.0
 
 For building the app, you would need:
+
 1. Qt >= 5.7.0
 2. Qt Build System (`qbs`, included with Qt)
 2. Catch, for testing (included as submodule)
