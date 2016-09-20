@@ -65,6 +65,12 @@ public slots:
     QList<QObject*> search_lyrics(const QString &artist, const QString &title);
     void loadMainUI();
     void loadCompactUI();
+    QString timestamp();
+
+    void saveLyrics(const QString &lyrics, const QUrl &path);
+    QString openLyrics(const QUrl &path);
+
+    void requestEditor();
 
 signals:
     void mediaChanged(MediaService*);
@@ -76,6 +82,8 @@ signals:
     void reloadCompactUI();
 
     void offsetChanged(int const&);
+
+    void editorRequested();
 
 private:
     MediaService* m_media;
@@ -100,6 +108,50 @@ private:
 
 private slots:
     void setCurrentLine(int mpos);
+};
+
+class EditorEngine : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QQuickTextDocument* quickdoc READ quickdoc WRITE setQuickdoc NOTIFY quickdocChanged)
+    Q_PROPERTY(QTextDocument* document READ document WRITE setDocument NOTIFY documentChanged)
+    Q_PROPERTY(int currentLine READ currentLine WRITE setCurrentLine NOTIFY currentLineChanged)
+    Q_PROPERTY(int currentLinePos READ currentLinePos WRITE setCurrentLinePos NOTIFY currentLinePosChanged)
+    Q_PROPERTY(int nextLinePos READ nextLinePos WRITE setNextLinePos NOTIFY nextLinePosChanged)
+public:
+    EditorEngine(QObject *parent = nullptr);
+
+    QQuickTextDocument* quickdoc() const;
+    void setQuickdoc(QQuickTextDocument *val);
+    QTextDocument *document() const;
+    void setDocument(QTextDocument *val);
+    int currentLine() const;
+    void setCurrentLine(int const& val);
+    int currentLinePos() const;
+    void setCurrentLinePos(int const& val);
+    int nextLinePos() const;
+    void setNextLinePos(int const& val);
+
+public slots:
+    int lineStartPos(int line);
+    void processCursorLoc(int pos);
+
+signals:
+    void documentChanged(QTextDocument *);
+    void currentLineChanged(int const&);
+    void currentLinePosChanged(int const&);
+    void nextLinePosChanged(int const&);
+    void quickdocChanged(QQuickTextDocument *);
+
+private:
+    QQuickTextDocument* m_quickdoc;
+    QTextDocument *m_document;
+    int m_currentLine;
+    int m_currentLinePos;
+    int m_nextLinePos;
+
+private slots:
+    void processCursorPos(const QTextCursor &cursor);
 };
 
 #endif // DESKTOP_LYRICS_H

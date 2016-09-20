@@ -121,6 +121,11 @@ LyricsViewerUI {
             sbOffset.value = app.offset;
             syncOffset = false;
         }
+        onEditorRequested: {
+            app.reloadMainUI();
+            editor.editor.open(app.lyricsFile);
+            editor.visible = true;
+        }
     }
 
     topLayout.onVisibleChanged: {
@@ -139,6 +144,10 @@ LyricsViewerUI {
         window.height += bottomLayout.visible ? 80 : -80;
     }
 
+    LyricsEditor {
+        id: editor
+    }
+
     Keys.onPressed: {
         if (event.key === Qt.Key_F1)
             topLayout.visible = !topLayout.visible;
@@ -154,6 +163,10 @@ LyricsViewerUI {
         }
         else if (event.key === Qt.Key_F5)
             app.loadCompactUI();
+        else if (event.key === Qt.Key_F6) {
+            editor.editor.open(app.lyricsFile);
+            editor.visible = true;
+        }
     }
 
     Settings {

@@ -1,3 +1,5 @@
+#include <chrono>
+
 #include <catch.hpp>
 #include "../lyrics_parser.h"
 
@@ -31,4 +33,12 @@ TEST_CASE("Parsing a whole lyrics", "[!hide][lyrics]")
     {
         qDebug() << i->first << i->second;
     }
+}
+
+TEST_CASE("Formatting timestamp", "[editor]")
+{
+    namespace chr = std::chrono;
+    REQUIRE(lyrics::time_str(chr::seconds{ 0 }) == "00:00.00");
+    REQUIRE(lyrics::time_str(chr::seconds{ 246 }) == "04:06.00");
+    REQUIRE(lyrics::time_str(chr::milliseconds{ 246120 }) == "04:06.12");
 }

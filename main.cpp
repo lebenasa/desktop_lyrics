@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
     QGuiApplication app{ argc, argv };
 
     qmlRegisterType<LyricsWindow>("com.leben.lyrics", 1, 0, "LyricsWindow");
+    qmlRegisterType<EditorEngine>("com.leben.editor", 1, 0, "EditorEngine");
 
     QQuickStyle::setStyle("Material");
 

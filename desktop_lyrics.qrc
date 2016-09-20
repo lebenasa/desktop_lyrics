@@ -4,5 +4,8 @@
         <file>ui/LyricsViewer.qml</file>
         <file>ui/LyricsViewerUI.ui.qml</file>
         <file>ui/main.qml</file>
+        <file>ui/LyricsEditorUI.qml</file>
+        <file>ui/LyricsEditor.qml</file>
+        <file>ui/fontawesome.ttf</file>
     </qresource>
 </RCC>

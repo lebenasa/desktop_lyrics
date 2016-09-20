@@ -110,8 +110,8 @@ void AppEngine::setLyricsDir(const QUrl& val)
     {
         m_lyricsDir = val;
         emit lyricsDirChanged(val);
-        refresh_db();
     }
+    refresh_db();
 }
 
 void AppEngine::refresh_db()
@@ -216,6 +216,45 @@ void AppEngine::change_offset(const QUrl &lyrics, int offset)
     Q_UNUSED(offset);
 }
 
+QString AppEngine::timestamp()
+{
+    if (!m_media)
+        return "";
+    auto ts = static_cast<int>(m_media->position());
+    return QString::fromStdString(lyrics::time_str(std::chrono::milliseconds{ ts }));
+}
+
+void AppEngine::saveLyrics(const QString &lyrics, const QUrl &path)
+{
+    QFile o{ path.toLocalFile() };
+    if (o.open(QFile::WriteOnly | QFile::Truncate))
+    {
+        QTextStream s{ &o };
+        s << lyrics;
+    }
+    else
+    {
+        qWarning() << "Failed to open" << path.toLocalFile() << "for writing";
+    }
+}
+
+QString AppEngine::openLyrics(const QUrl &path)
+{
+    QFile o{ path.toLocalFile() };
+    if (o.open(QFile::ReadOnly | QFile::Text))
+    {
+        QTextStream s{ &o };
+        return s.readAll();
+    }
+    qWarning() << "Failed to open" << path.toLocalFile() << "for reading";
+    return "";
+}
+
+void AppEngine::requestEditor()
+{
+    emit editorRequested();
+}
+
 LyricsMatch::LyricsMatch(QObject *parent)
     : QObject{ parent }
 {
@@ -266,5 +305,140 @@ void LyricsMatch::setScore(double val)
     {
         m_score = val;
         emit scoreChanged(val);
+    }
+}
+
+EditorEngine::EditorEngine(QObject *parent)
+    : QObject{ parent }, m_quickdoc{ nullptr }, m_document{ nullptr }
+{
+}
+
+int EditorEngine::lineStartPos(int line)
+{
+    if (!m_document)
+        return -1;
+    if (line < 0 || line >= m_document->lineCount())
+        return -1;
+    auto txts = m_document->toPlainText().split('\n');
+    int pos = 0;
+    for (int i = 0; i < line; ++i)
+        pos += txts.at(i).size() + 1;
+    return pos;
+}
+
+void EditorEngine::processCursorLoc(int pos)
+{
+    if (!m_document)
+        return;
+    int ln = 0;
+    auto txt = m_document->toPlainText();
+    for (int i = 0; i < txt.size(); ++i)
+    {
+        --pos;
+        if (txt.at(i) == '\n')
+            ++ln;
+        if (pos <= 0)
+            break;
+    }
+    setCurrentLine(ln);
+    setCurrentLinePos(lineStartPos(currentLine()));
+    setNextLinePos(lineStartPos(ln + 1));
+}
+
+void EditorEngine::processCursorPos(const QTextCursor &cursor)
+{
+    if (!m_document)
+        return;
+    int ln = 0;
+    int cursor_pos = cursor.position();
+    auto txt = m_document->toPlainText();
+    for (int i = 0; i < txt.size(); ++i)
+    {
+        --cursor_pos;
+        if (txt.at(i) == '\n')
+            ++ln;
+        if (cursor_pos <= 0)
+            break;
+    }
+    setCurrentLine(ln);
+    setCurrentLinePos(lineStartPos(currentLine()));
+    setNextLinePos(lineStartPos(ln + 1));
+}
+
+QQuickTextDocument *EditorEngine::quickdoc() const
+{
+    return m_quickdoc;
+}
+
+void EditorEngine::setQuickdoc(QQuickTextDocument *val)
+{
+    if (val != m_quickdoc && val)
+    {
+        m_quickdoc = val;
+        setDocument(m_quickdoc->textDocument());
+        emit quickdocChanged(val);
+    }
+}
+
+QTextDocument *EditorEngine::document() const
+{
+    return m_document;
+}
+
+void EditorEngine::setDocument(QTextDocument *val)
+{
+    if (val != m_document && val)
+    {
+        if (m_document)
+        {
+            disconnect(m_document, &QTextDocument::cursorPositionChanged,
+                       this, &EditorEngine::processCursorPos);
+        }
+        m_document = val;
+        connect(val, &QTextDocument::cursorPositionChanged,
+                this, &EditorEngine::processCursorPos);
+        emit documentChanged(val);
+    }
+}
+
+int EditorEngine::currentLine() const
+{
+    return m_currentLine;
+}
+
+void EditorEngine::setCurrentLine(const int& val)
+{
+    if (val != m_currentLine)
+    {
+        m_currentLine = val;
+        emit currentLineChanged(val);
+    }
+}
+
+int EditorEngine::currentLinePos() const
+{
+    return m_currentLinePos;
+}
+
+void EditorEngine::setCurrentLinePos(const int& val)
+{
+    if (val != m_currentLinePos)
+    {
+        m_currentLinePos = val;
+        emit currentLinePosChanged(val);
+    }
+}
+
+int EditorEngine::nextLinePos() const
+{
+    return m_nextLinePos;
+}
+
+void EditorEngine::setNextLinePos(const int& val)
+{
+    if (val != m_nextLinePos)
+    {
+        m_nextLinePos = val;
+        emit nextLinePosChanged(val);
     }
 }

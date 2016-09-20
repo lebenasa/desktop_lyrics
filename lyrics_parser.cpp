@@ -33,7 +33,7 @@ lyrics_map lyrics::parse_all(const QStringList &lyrics)
 {
     lyrics_map res;
     auto i = lyrics.begin();
-    for (; parse_line(*i).empty(); ++i)
+    for (; i != lyrics.end() && parse_line(*i).empty(); ++i)
     {
         if (i->contains("[offset:"))
         {
@@ -43,7 +43,7 @@ lyrics_map lyrics::parse_all(const QStringList &lyrics)
                 res[-1] = match.captured(0);
         }
     }
-    for (--i; i != lyrics.end(); ++i)
+    for (; i != lyrics.end(); ++i)
     {
         auto m = parse_line(*i);
         std::move(begin(m), end(m), std::inserter(res, end(res)));

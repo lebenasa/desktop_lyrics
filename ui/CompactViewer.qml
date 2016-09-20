@@ -30,9 +30,16 @@ LyricsWindow {
                 verticalAlignment: Label.AlignVCenter
             }
 
-            Keys.onPressed: {
-                if (event.key === Qt.Key_F5)
-                    app.reloadMainUI();
+            Shortcut {
+                sequence: "F5"
+                autoRepeat: false
+                onActivated: app.reloadMainUI()
+            }
+
+            Shortcut {
+                sequence: "F6"
+                autoRepeat: false
+                onActivated: app.requestEditor()
             }
         }
 
