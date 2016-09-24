@@ -89,6 +89,8 @@ public slots:
 
     void requestEditor();
 
+    void refresh_db();
+
 signals:
     void mediaChanged(MediaService*);
     void lyricsFileChanged(QUrl const&);
@@ -117,7 +119,6 @@ private:
     int m_offset;
 
     void update_lyrics();
-    void refresh_db();
 
     void store_chosen(const QUrl &music, const QUrl &lyrics);
     QUrl load_chosen(const QUrl &music);

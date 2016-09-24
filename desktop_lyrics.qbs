@@ -19,7 +19,7 @@ import qbs
 
 CppApplication {
     name: "Desktop Lyrics"
-    Depends { name: "Qt"; submodules: [ "core", "quick", "quickcontrols2", "gui", "dbus" ] }
+    Depends { name: "Qt"; submodules: [ "core", "quick", "quickcontrols2", "gui", "dbus", "widgets" ] }
 
     cpp.cxxLanguageVersion: "c++14"
     cpp.enableExceptions: true

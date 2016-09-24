@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
@@ -26,8 +26,8 @@
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication app{ argc, argv };
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication app{ argc, argv };
 
     qmlRegisterType<LyricsWindow>("com.leben.lyrics", 1, 0, "LyricsWindow");
     qmlRegisterType<EditorEngine>("com.leben.editor", 1, 0, "EditorEngine");

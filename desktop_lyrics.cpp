@@ -17,6 +17,8 @@
 
 #include <algorithm>
 
+#include <QtWidgets>
+
 #include "file_search.h"
 #include "desktop_lyrics.h"
 using namespace std;

@@ -38,6 +38,7 @@ LyricsViewerUI {
         onClicked: app.lyricsFile = modelData.path
     }
     searchView.onModelChanged: {
+        app.refresh_db();
         if (searchView.model.length > 0 && searchView.model[0].score >= 0.6) {
             app.lyricsFile = searchView.model[0].path;
         }
@@ -108,6 +109,8 @@ LyricsViewerUI {
     Connections {
         target: media
         onPositionChanged: {
+            if (mediaPosition.pressed)
+                return;
             syncPosition = true;
             mediaPosition.value = media.position / media.mtime;
             syncPosition = false;

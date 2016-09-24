@@ -186,23 +186,43 @@ Item {
             }
             Button {
                 id: btnPrev
-                text: qsTr("Prev")
+                font.family: "FontAwesome"
+                text: qsTr("\uf048")
+                hoverEnabled: true
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Previous")
             }
             Button {
                 id: btnPlay
-                text: qsTr("Play")
+                font.family: "FontAwesome"
+                text: qsTr("\uf04b")
+                hoverEnabled: true
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Play")
             }
             Button {
                 id: btnPause
-                text: qsTr("Pause")
+                font.family: "FontAwesome"
+                text: qsTr("\uf04c")
+                hoverEnabled: true
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Pause")
             }
             Button {
                 id: btnStop
-                text: qsTr("Stop")
+                font.family: "FontAwesome"
+                text: qsTr("\uf04d")
+                hoverEnabled: true
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Stop")
             }
             Button {
                 id: btnNext
-                text: qsTr("Next")
+                font.family: "FontAwesome"
+                text: qsTr("\uf051")
+                hoverEnabled: true
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Next")
             }
             Item {
                 id: item2
