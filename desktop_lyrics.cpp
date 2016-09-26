@@ -79,6 +79,10 @@ void AppEngine::update_lyrics()
             setOffset(ioffset->second.toInt());
             m_lrcmap.erase(ioffset);
         }
+        else
+        {
+            setOffset(0);
+        }
         m_lastlrcln = begin(m_lrcmap);
     }
     else
