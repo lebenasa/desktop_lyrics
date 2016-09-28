@@ -46,9 +46,8 @@ ApplicationWindow {
                 ToolTip.text: qsTr("Save lyrics in different file.\nShortcut: Ctrl+Shift+S")
                 ToolTip.delay: 500
                 ToolTip.timeout: 1000
-                onClicked: {
-                    dgSaveLyrics.open();
-                }
+                onClicked: acSaveAs.activated();
+
             }
             ToolButton {
                 text: qsTr("\uf115")
@@ -59,7 +58,7 @@ ApplicationWindow {
                 ToolTip.text: qsTr("Open text/lyrics file.\nShortcut: Ctrl+O")
                 ToolTip.delay: 500
                 ToolTip.timeout: 1000
-                onClicked: dgOpenLyrics.open()
+                onClicked: acOpen.activated()
             }
             ToolButton {
                 text: qsTr("\uf01a")
@@ -171,15 +170,30 @@ ApplicationWindow {
     footer: ToolBar {
         RowLayout {
             anchors.fill: parent
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
 
             Label {
                 id: status
                 text: ""
+                clip: true
+                Timer {
+                    id: tmStatus
+                    interval: 3000
+                    repeat: false
+                    triggeredOnStart: false
+                    onTriggered: status.text = ""
+                }
+                onTextChanged: {
+                    if (text.length > 0)
+                        tmStatus.start();
+                }
             }
             Item { Layout.fillWidth: true }
             Label {
                 text: qsTr("Col: %1 Line: %2 Pos: %3 \t").arg(ui.editor.cursorPosition - ui.currentLineStartPos).
                 arg(ui.currentLine).arg(ui.editor.cursorPosition)
+                horizontalAlignment: Text.AlignRight
             }
         }
     }
@@ -195,7 +209,7 @@ ApplicationWindow {
 
     FileDialog {
         id: dgSaveLyrics
-        title: "Open Lyrics"
+        title: "Save Lyrics"
         folder: dgOpenLyrics.folder
         nameFilters: ["Lyrics files (*.lrc)", "Text files (*.txt)", "All files (*.*)"]
         selectExisting: false
@@ -214,6 +228,7 @@ ApplicationWindow {
         sequence: "Ctrl+Shift+S"
         autoRepeat: false
         onActivated: {
+//            dgSaveLyrics.fileUrl = dgOpenLyrics.folder + "/" + media.artist + " - " + media.title + ".lrc";
             dgSaveLyrics.open();
         }
     }

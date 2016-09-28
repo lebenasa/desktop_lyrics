@@ -15,7 +15,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <chrono>
+
 #include "media_service.h"
+#include "lyrics_parser.h"
 
 MediaService::MediaService(QObject *parent)
     : QObject{ parent }, m_player{ "org.mpris.clementine", "/Player",
@@ -266,6 +269,11 @@ int MediaService::year() const
     return m_metadata.value("year").toInt();
 }
 
+QString MediaService::timeLabel(qreal position)
+{
+    qlonglong ts = position * time();
+    return QString::fromStdString(lyrics::time_str(std::chrono::seconds{ ts })).left(5);
+}
 
 
 

@@ -93,6 +93,8 @@ public slots:
 
     void repeat(bool);
 
+    QString timeLabel(qreal position);
+
 signals:
     void capsChanged(int);
     void trackChanged(QVariantMap const&);

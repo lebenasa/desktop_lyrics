@@ -165,6 +165,12 @@ Item {
             Layout.fillWidth: true
             Layout.columnSpan: 3
             value: 0.5
+
+            ToolTip {
+                parent: mediaPosition.handle
+                visible: mediaPosition.pressed
+                text: media.timeLabel(mediaPosition.visualPosition)
+            }
         }
 
         RowLayout {
