@@ -15,6 +15,7 @@ ApplicationWindow {
                                                    "Lyrics Editor - %1".arg(FileInfo.toLocalFile(savePath))
     property alias editor: ui
     property url savePath
+    property url track
 
     Material.theme: Material.Dark
     Material.primary: Material.Blue
@@ -149,7 +150,8 @@ ApplicationWindow {
         function save() {
             app.saveLyrics(ui.editor.text, root.savePath);
             app.lyricsDir = app.lyricsDir;
-            app.lyricsFile = root.savePath;
+            if (media.location == root.track)
+                app.lyricsFile = root.savePath;
             status.text = qsTr("Saved lyrics to %1").arg(FileInfo.toLocalFile(root.savePath));
         }
 
@@ -157,13 +159,16 @@ ApplicationWindow {
             app.saveLyrics(ui.editor.text, path);
             root.savePath = path;
             app.lyricsDir = app.lyricsDir;
-            app.lyricsFile = path;
+            if (media.location == root.track)
+                app.lyricsFile = path;
             status.text = qsTr("Saved lyrics to %1").arg(FileInfo.toLocalFile(path));
         }
 
         function open(path) {
-            root.savePath = path;
-            ui.editor.text = app.openLyrics(path);
+            if (FileInfo.exists(path)) {
+                root.savePath = path;
+                ui.editor.text = app.openLyrics(path);
+            }
         }
     }
 
@@ -175,6 +180,7 @@ ApplicationWindow {
 
             Label {
                 id: status
+                Layout.maximumWidth: parent.width / 2
                 text: ""
                 clip: true
                 Timer {
@@ -258,5 +264,10 @@ ApplicationWindow {
         sequence: "F6"
         autoRepeat: false
         onActivated: ui.prev()
+    }
+
+    onVisibleChanged: {
+        if (visible)
+            root.track = media.location;
     }
 }

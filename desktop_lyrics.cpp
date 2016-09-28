@@ -52,14 +52,11 @@ QUrl AppEngine::lyricsFile() const
 
 void AppEngine::setLyricsFile(const QUrl& val)
 {
-    if (val != m_lyricsFile)
-    {
-        m_lyricsFile = val;
-        emit lyricsFileChanged(val);
-        update_lyrics();
-        if (m_media)
-            store_chosen(m_media->location(), val);
-    }
+    m_lyricsFile = val;
+    emit lyricsFileChanged(val);
+    update_lyrics();
+    if (m_media)
+        store_chosen(m_media->location(), val);
 }
 
 void AppEngine::update_lyrics()
@@ -332,16 +329,17 @@ void LyricsMatch::setScore(double val)
 }
 
 EditorEngine::EditorEngine(QObject *parent)
-    : QObject{ parent }, m_quickdoc{ nullptr }, m_document{ nullptr }
+    : QObject{ parent }, m_quickdoc{ nullptr }, m_document{ nullptr },
+      m_currentLine{ 0 }, m_currentLinePos{ 0 }, m_nextLinePos{ 0 }
 {
 }
 
 int EditorEngine::lineStartPos(int line)
 {
     if (!m_document)
-        return -1;
+        return 0;
     if (line < 0 || line >= m_document->lineCount())
-        return -1;
+        return 0;
     auto txts = m_document->toPlainText().split('\n');
     int pos = 0;
     for (int i = 0; i < line; ++i)
