@@ -267,7 +267,9 @@ ApplicationWindow {
     }
 
     onVisibleChanged: {
-        if (visible)
+        if (visible) {
             root.track = media.location;
+            editor.editor.focus = true;
+        }
     }
 }
