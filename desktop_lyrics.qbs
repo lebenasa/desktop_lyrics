@@ -18,11 +18,12 @@
 import qbs
 
 CppApplication {
-    name: "Desktop Lyrics"
+    name: "desktop_lyrics"
     Depends { name: "Qt"; submodules: [ "core", "quick", "quickcontrols2", "gui", "dbus", "widgets" ] }
 
     cpp.cxxLanguageVersion: "c++14"
     cpp.enableExceptions: true
+    cpp.includePaths: ["/usr/include/nvidia-361/"]
     consoleApplication: false
 
     files: [
