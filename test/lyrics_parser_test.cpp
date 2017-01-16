@@ -18,7 +18,7 @@
 #include <chrono>
 
 #include <catch.hpp>
-#include "../lyrics_parser.h"
+#include "../src/lyrics_parser.h"
 
 TEST_CASE("Parsing a line of LRC file", "[line]")
 {

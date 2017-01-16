@@ -17,7 +17,7 @@
 
 #include <catch.hpp>
 
-#include "file_search.h"
+#include "../src/file_search.h"
 using namespace std;
 using namespace lyrics;
 

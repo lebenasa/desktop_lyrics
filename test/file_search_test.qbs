@@ -23,12 +23,12 @@ CppApplication {
     consoleApplication: true
     cpp.cxxLanguageVersion: "c++11"
     cpp.enableExceptions: true
-    cpp.includePaths: "../"
+    cpp.includePaths: "../3rdparty"
     cpp.cxxFlags: "-Wno-unknown-pragmas"
 
     files: [
-        "../file_search.cpp",
-        "../file_search.h",
+        "../src/file_search.cpp",
+        "../src/file_search.h",
         "file_search_test.cpp",
         "test_main.cpp",
     ]

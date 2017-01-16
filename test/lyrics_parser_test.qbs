@@ -23,14 +23,14 @@ CppApplication {
     consoleApplication: true
     cpp.cxxLanguageVersion: "c++11"
     cpp.enableExceptions: true
-    cpp.includePaths: "../"
+    cpp.includePaths: "../3rdparty"
     cpp.cxxFlags: "-Wno-unknown-pragmas"
 
     files: [
-        "../media_service.h",
-        "../media_service.cpp",
-        "../lyrics_parser.h",
-        "../lyrics_parser.cpp",
+        "../src/media_service.h",
+        "../src/media_service.cpp",
+        "../src/lyrics_parser.h",
+        "../src/lyrics_parser.cpp",
         "lyrics_parser_test.cpp",
         "test_main.cpp",
     ]

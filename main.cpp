@@ -20,9 +20,9 @@
 #include <QQmlContext>
 #include <QQuickStyle>
 
-#include "media_service.h"
-#include "desktop_lyrics.h"
-#include "lyrics_window.h"
+#include "src/media_service.h"
+#include "src/desktop_lyrics.h"
+#include "src/lyrics_window.h"
 
 int main(int argc, char *argv[])
 {

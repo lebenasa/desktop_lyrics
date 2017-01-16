@@ -1,0 +1,2 @@
+module com.leben.appsettings
+plugin appsettings_qmlplugin
