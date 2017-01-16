@@ -3,6 +3,7 @@ import qbs.FileInfo
 import "../qmlplugin.qbs" as QmlPlugin
 
 QmlPlugin {
+    name: "fileinfo_qmlplugin"
     pluginName: "fileinfo_qmlplugin"
 
     uri: "com.leben.fileinfo"

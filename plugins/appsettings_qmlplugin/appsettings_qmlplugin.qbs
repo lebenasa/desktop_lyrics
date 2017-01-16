@@ -2,6 +2,7 @@ import qbs
 import "../qmlplugin.qbs" as QmlPlugin
 
 QmlPlugin {
+    name: "appsettings_qmlplugin"
     pluginName: "appsettings_qmlplugin"
 
     uri: "com.leben.appsettings"
