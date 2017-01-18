@@ -152,7 +152,7 @@ QList<QObject *> AppEngine::search_lyrics(const QString &artist, const QString &
         if (!last_chosen.isEmpty())
         {
             QFileInfo fi{ last_chosen.toLocalFile() };
-            auto li = new LyricsMatch(fi.fileName(), last_chosen, 2.0, this);
+            auto li = new LyricsMatch(fi.fileName(), last_chosen, 2.0, true, this);
             res.push_back(li);
         }
     }
@@ -161,7 +161,7 @@ QList<QObject *> AppEngine::search_lyrics(const QString &artist, const QString &
         auto score = lyrics::match_score(fi.fileName(), artist, title);
         if (score >= 0.5)
         {
-            auto li = new LyricsMatch(fi.fileName(), QUrl::fromLocalFile(fi.filePath()), score, this);
+            auto li = new LyricsMatch(fi.fileName(), QUrl::fromLocalFile(fi.filePath()), score, false, this);
             res.push_back(qobject_cast<QObject*>(li));
         }
     }
@@ -281,8 +281,9 @@ LyricsMatch::LyricsMatch(QObject *parent)
 }
 
 LyricsMatch::LyricsMatch(const QString &name, const QUrl &path,
-                         double score, QObject *parent)
-    : QObject{ parent }, m_name{ name }, m_path{ path }, m_score{ score }
+                         double score, bool last_chosen, QObject *parent)
+    : QObject{ parent }, m_name{ name }, m_path{ path }, m_score{ score },
+      m_lastChosen{ last_chosen }
 {
 }
 
@@ -325,6 +326,20 @@ void LyricsMatch::setScore(double val)
     {
         m_score = val;
         emit scoreChanged(val);
+    }
+}
+
+bool LyricsMatch::lastChosen() const
+{
+    return m_lastChosen;
+}
+
+void LyricsMatch::setLastChosen(const bool& lastChosen)
+{
+    if (lastChosen != m_lastChosen)
+    {
+        m_lastChosen = lastChosen;
+        emit lastChosenChanged(lastChosen);
     }
 }
 
