@@ -57,8 +57,6 @@ Project {
                 "ui/CompactViewer.qml",
                 "ui/LyricsEditor.qml",
                 "ui/LyricsEditorUI.qml",
-                "ui/LyricsStudio.qml",
-                "ui/LyricsStudioUI.ui.qml",
                 "ui/LyricsViewer.qml",
                 "ui/LyricsViewerUI.ui.qml",
                 "ui/main.qml",
