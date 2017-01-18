@@ -3,6 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Dialogs 1.2
 import QtQuick.Window 2.0
 import Qt.labs.settings 1.0
+import QtQuick.Controls.Material 2.0
 
 import com.leben.fileinfo 1.0
 import com.leben.appsettings 1.0
@@ -33,7 +34,9 @@ LyricsViewerUI {
     sbOffset.editable: false
 
     searchView.delegate: ItemDelegate {
-        text: modelData.name
+        id: delegateSearchView
+        text: modelData.lastChosen ? qsTr("[Previous Selection] ") + modelData.name : modelData.name
+        font.bold: modelData.lastChosen
         width: parent.width
         onClicked: app.lyricsFile = modelData.path
     }
@@ -104,6 +107,12 @@ LyricsViewerUI {
         value: app.search_lyrics(
                    media.artist.length > 0 ? media.artist : media.location,
                    media.title.length > 0 ? media.title : media.location)
+    }
+
+    Binding {
+        target: tooltipMediaPosition
+        property: "text"
+        value: media.timeLabel(mediaPosition.visualPosition)
     }
 
     Connections {

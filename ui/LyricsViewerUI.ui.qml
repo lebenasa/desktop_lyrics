@@ -25,6 +25,7 @@ Item {
     property alias btnNext: btnNext
     property alias btnOpenLyrics: btnOpenLyrics
     property alias lyricsArea: lyricsArea
+    property alias tooltipMediaPosition: tooltipMediaPosition
 
     ColumnLayout {
         id: columnLayout1
@@ -167,9 +168,9 @@ Item {
             value: 0.5
 
             ToolTip {
+                id: tooltipMediaPosition
                 parent: mediaPosition.handle
                 visible: mediaPosition.pressed
-                text: media.timeLabel(mediaPosition.visualPosition)
             }
         }
 

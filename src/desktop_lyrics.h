@@ -30,10 +30,11 @@ class LyricsMatch : public QObject
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QUrl path READ path WRITE setPath NOTIFY pathChanged)
     Q_PROPERTY(double score READ score WRITE setScore NOTIFY scoreChanged)
+    Q_PROPERTY(bool lastChosen READ lastChosen WRITE setLastChosen NOTIFY lastChosenChanged)
 public:
     LyricsMatch(QObject *parent = nullptr);
     LyricsMatch(const QString &name, const QUrl &path,
-                double score, QObject *parent = nullptr);
+                double score, bool last_chosen = false, QObject *parent = nullptr);
 
     QString name() const;
     void setName(QString const& val);
@@ -41,16 +42,20 @@ public:
     void setPath(QUrl const& val);
     double score() const;
     void setScore(double val);
+    bool lastChosen() const;
+    void setLastChosen(const bool& lastChosen);
 
 signals:
     void nameChanged(QString const&);
     void pathChanged(QUrl const&);
     void scoreChanged(int const&);
+    void lastChosenChanged(bool lastChosen);
 
 private:
     QString m_name;
     QUrl m_path;
     double m_score;
+    bool m_lastChosen;
 };
 
 class AppEngine : public QObject
