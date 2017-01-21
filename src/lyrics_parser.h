@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include <map>
+#include <vector>
 #include <string>
 #include <chrono>
 #include <iostream>
@@ -31,9 +32,15 @@
 namespace lyrics
 {
 using lyrics_map = std::map<int, QString>;
+using lyrics_line = std::pair<lyrics_map::key_type, lyrics_map::value_type>;
+using lyrics_vec = std::vector<lyrics_line>;
 
 lyrics_map parse_line(const QString &line);
 lyrics_map parse_all(const QStringList &lyrics);
+
+lyrics_vec lyrics_model(const lyrics_map &);
+void sort_timestamp(lyrics_vec &);
+QStringList serialize(lyrics_vec const&);
 
 int to_ms(const QString &time);
 template< class T, class Rep >

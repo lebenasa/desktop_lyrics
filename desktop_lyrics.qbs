@@ -33,6 +33,8 @@ Project {
         files: [
             "src/desktop_lyrics.cpp",
             "src/desktop_lyrics.h",
+            "src/lyrics_editor.cpp",
+            "src/lyrics_editor.h",
             "src/lyrics_parser.cpp",
             "src/lyrics_parser.h",
             "src/lyrics_window.cpp",
