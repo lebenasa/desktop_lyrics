@@ -35,9 +35,12 @@ LyricsViewerUI {
 
     searchView.delegate: ItemDelegate {
         id: delegateSearchView
-        text: modelData.lastChosen ? qsTr("[Previous Selection] ") + modelData.name : modelData.name
+        text: modelData.name
         font.bold: modelData.lastChosen
         width: parent.width
+        hoverEnabled: true
+        ToolTip.visible: hovered && modelData.lastChosen
+        ToolTip.text: modelData.lastChosen ? qsTr("Previous Lyrics") : modelData.path
         onClicked: app.lyricsFile = modelData.path
     }
     searchView.onModelChanged: {
