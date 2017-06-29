@@ -20,16 +20,36 @@
 #include "media_service.h"
 #include "lyrics_parser.h"
 
+/*!
+  \class MediaService
+  \brief Base implementation for connection with media service provider.
+         Uses Clementine DBus as default.
+ */
+
+const QString mpris_base = "org.mpris.MediaPlayer2";
+const QString mpris_path = "/Player";
+const QString mpris_interface = "org.freedesktop.MediaPlayer";
+
+QString mpris_service(const QString &app)
+{
+    return mpris_base + "." + app;
+}
+
+/*!
+ * \brief MediaService::MediaService
+ * 		  Initializes MediaService object. Uses Clementine's MPRIS 2 interface.
+ * \param parent
+ */
 MediaService::MediaService(QObject *parent)
-    : QObject{ parent }, m_player{ "org.mpris.clementine", "/Player",
-                                   "org.freedesktop.MediaPlayer" }
+    : QObject{ parent }, m_player{ mpris_service("amarok"), mpris_path,
+                                   mpris_interface }
 {
     if (isValid())
         emit validChanged(true);
     connect(&m_player, SIGNAL(CapsChange(int)), this, SLOT(setCaps(int)));
-    m_player.connection().connect("org.mpris.clementine", "/Player", "org.freedesktop.MediaPlayer",
+    m_player.connection().connect(mpris_service("amarok"), mpris_path, mpris_interface,
                                   "TrackChange", this, SLOT(updateMetadata()));
-    m_player.connection().connect("org.mpris.clementine", "/Player", "org.freedesktop.MediaPlayer",
+    m_player.connection().connect(mpris_service("amarok"), mpris_path, mpris_interface,
                                   "TrackChange", this, SIGNAL(trackChanged(QVariantMap)));
     updateVolume();
     updateMetadata();

@@ -27,6 +27,7 @@ Product {
     Group {
         name: "qmldir"
         condition: File.exists(sourceDirectory + "/qmldir")
+        prefix: sourceDirectory + "/"
         files: "qmldir"
         qbs.install: true
         qbs.installDir: uri.split(".").join("/")

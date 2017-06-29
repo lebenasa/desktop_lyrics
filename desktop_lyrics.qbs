@@ -19,6 +19,7 @@ import qbs
 
 Project {
     name: "desktop_lyrics_project"
+    minimumQbsVersion: "1.7"
     CppApplication {
         name: "desktop_lyrics"
         Depends { name: "Qt"; submodules: [ "core", "quick", "quickcontrols2", "gui", "dbus", "widgets" ] }
@@ -45,7 +46,7 @@ Project {
             "main.cpp",
         ]
 
-        //    qbs.installRoot: "/home/leben/bin/"
+        qbs.installRoot: "/home/leben/bin/"
 
         Group {
             fileTagsFilter: product.type
