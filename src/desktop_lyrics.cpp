@@ -96,6 +96,7 @@ QString AppEngine::currentLine() const
 
 void AppEngine::setCurrentLine(int mpos)
 {
+    mpos = mpos / 1000;
     if (m_lrcmap.empty())
     {
         m_currentLine = "";
@@ -146,6 +147,7 @@ void AppEngine::refresh_db()
 QList<QObject *> AppEngine::search_lyrics(const QString &artist, const QString &title)
 {
     QList<QObject*> res;
+    QString last_chosen_file_name;
     if (m_media)
     {
         auto last_chosen = load_chosen(m_media->location());
@@ -154,10 +156,14 @@ QList<QObject *> AppEngine::search_lyrics(const QString &artist, const QString &
             QFileInfo fi{ last_chosen.toLocalFile() };
             auto li = new LyricsMatch(fi.fileName(), last_chosen, 2.0, true, this);
             res.push_back(li);
+            last_chosen_file_name = fi.fileName();
         }
     }
     for (const auto &fi : m_lyricsDirFiles)
     {
+        if (last_chosen_file_name == fi.fileName()) {
+            continue;
+        }
         auto score = lyrics::match_score(fi.fileName(), artist, title);
         if (score >= 0.5)
         {
@@ -214,7 +220,11 @@ void AppEngine::setOffset(const int& val)
 void AppEngine::store_chosen(const QUrl &music, const QUrl &lyrics)
 {
     QSettings s("leben", "desktop_lyrics", this);
-    s.beginGroup(music.toLocalFile());
+    auto key = music.toLocalFile();
+    if (music.toLocalFile().isEmpty()) {
+        key = music.toString();
+    }
+    s.beginGroup(key);
     s.setValue("lyrics", lyrics.toLocalFile());
     s.endGroup();
 }
@@ -222,7 +232,11 @@ void AppEngine::store_chosen(const QUrl &music, const QUrl &lyrics)
 QUrl AppEngine::load_chosen(const QUrl &music)
 {
     QSettings s("leben", "desktop_lyrics", this);
-    s.beginGroup(music.toLocalFile());
+    auto key = music.toLocalFile();
+    if (music.toLocalFile().isEmpty()) {
+        key = music.toString();
+    }
+    s.beginGroup(key);
     auto lrc = s.value("lyrics").toString();
     s.endGroup();
     if (lrc.isEmpty())
@@ -241,7 +255,7 @@ QString AppEngine::timestamp()
     if (!m_media)
         return "";
     auto ts = static_cast<int>(m_media->position());
-    return QString::fromStdString(lyrics::time_str(std::chrono::milliseconds{ ts }));
+    return QString::fromStdString(lyrics::time_str(std::chrono::microseconds{ ts }));
 }
 
 void AppEngine::saveLyrics(const QString &lyrics, const QUrl &path)

@@ -26,16 +26,12 @@ pair<int, int> score(const QString &src, const QString &pattern, int score)
 {
     int match = 0;
     int total = 0;
-    for (const auto &v : pattern.split(" "))
+    for (const auto &v : pattern.split(QRegExp{"[ -_!@#%^&*?:]"}))
     {
         total += score;
         if (src.contains(v))
             match += score;
     }
-
-    if (match == total)
-        match += 2 * score;
-    total += 2 * score;
 
     return make_pair(match, total);
 }
@@ -55,5 +51,5 @@ double lyrics::match_score(const QString &source, const QString &artist,
 
     if (t1 + t2 == 0)
         return 1.0;
-    return 0.5 * m1 / t1 + 0.5 * m2 / t2;
+    return 0.45 * m1 / t1 + 0.6 * m2 / t2;
 }

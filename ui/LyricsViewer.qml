@@ -22,7 +22,7 @@ LyricsViewerUI {
     btnNext.onClicked: media.next()
     mediaPosition.onValueChanged: {
         if (!syncPosition)
-            media.position = mediaPosition.value * media.mtime;
+            media.position = mediaPosition.value * media.length;
     }
     btnOpenLyrics.onClicked: dgOpenLyrics.open()
     sbOffset.onValueChanged: {
@@ -36,7 +36,7 @@ LyricsViewerUI {
     searchView.delegate: ItemDelegate {
         id: delegateSearchView
         text: modelData.name
-        font.bold: modelData.lastChosen
+        font.bold: modelData.path === app.lyricsFile
         width: parent.width
         hoverEnabled: true
         ToolTip.visible: hovered && modelData.lastChosen
@@ -124,7 +124,7 @@ LyricsViewerUI {
             if (mediaPosition.pressed)
                 return;
             syncPosition = true;
-            mediaPosition.value = media.position / media.mtime;
+            mediaPosition.value = media.position / media.length;
             syncPosition = false;
         }
     }

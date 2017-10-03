@@ -24,9 +24,8 @@
 class MediaService : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
+    Q_PROPERTY(float volume READ volume WRITE setVolume NOTIFY volumeChanged)
     Q_PROPERTY(QVariantMap metadata READ metadata NOTIFY metadataChanged)
-    Q_PROPERTY(int caps READ caps NOTIFY capsChanged)
     Q_PROPERTY(bool valid READ isValid NOTIFY validChanged)
     Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
     // Metadata
@@ -39,22 +38,20 @@ class MediaService : public QObject
     Q_PROPERTY(QString comment READ comment NOTIFY commentChanged)
     Q_PROPERTY(QString genre READ genre NOTIFY genreChanged)
     Q_PROPERTY(QUrl location READ location NOTIFY locationChanged)
-    Q_PROPERTY(qlonglong mtime READ mtime NOTIFY mtimeChanged)
     Q_PROPERTY(QString performer READ performer NOTIFY performerChanged)
-    Q_PROPERTY(qlonglong time READ time NOTIFY timeChanged)
+    Q_PROPERTY(qlonglong length READ length NOTIFY lengthChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(int trackNumber READ trackNumber NOTIFY trackNumberChanged)
+    Q_PROPERTY(QString trackID READ trackID NOTIFY trackIDChanged)
     Q_PROPERTY(int year READ year NOTIFY yearChanged)
 
 public:
     MediaService(QObject *parent = nullptr);
 
-    int caps() const;
+    float volume() const;
+    void setVolume(float);
 
-    int volume() const;
-    void setVolume(int);
-
-    QVariantMap metadata() const;
+    const QVariantMap &metadata();
 
     bool isValid() const;
 
@@ -70,11 +67,11 @@ public:
     QString comment() const;
     QString genre() const;
     QUrl location() const;
-    qlonglong mtime() const;
     QString performer() const;
-    qlonglong time() const;
+    qlonglong length() const;
     QString title() const;
     int trackNumber() const;
+    QString trackID() const;
     int year() const;
 
 public slots:
@@ -85,8 +82,8 @@ public slots:
     void next();
     void prev();
 
-    void volumeDown(int);
-    void volumeUp(int);
+    void volumeDown(float);
+    void volumeUp(float);
     void mute();
 
     void showOSD();
@@ -96,16 +93,12 @@ public slots:
     QString timeLabel(qreal position);
 
 signals:
-    void capsChanged(int);
-    void trackChanged(QVariantMap const&);
-
-    void volumeChanged(int);
-
-    void metadataChanged(QVariantMap const&);
-
     void validChanged(bool const&);
 
+    void metadataChanged(QVariantMap const&);
     void positionChanged(int);
+
+    void volumeChanged(float);
 
     void albumChanged(QString const&);
     void artistChanged(QString const&);
@@ -116,18 +109,16 @@ signals:
     void commentChanged(QString const&);
     void genreChanged(QString const&);
     void locationChanged(QUrl const&);
-    void mtimeChanged(qlonglong const&);
     void performerChanged(QString const&);
-    void timeChanged(qlonglong const&);
+    void lengthChanged(qlonglong const&);
     void titleChanged(QString const&);
     void trackNumberChanged(int const&);
+    void trackIDChanged(QString const&);
     void yearChanged(int const&);
 
 private slots:
-    void setCaps(int);
-    void updateVolume();
-    void updateMetadata();
     void updatePosition();
+    void playerPropertyChanged();
 
 private:
     QDBusInterface m_player;

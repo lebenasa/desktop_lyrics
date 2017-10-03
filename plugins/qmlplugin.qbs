@@ -11,7 +11,7 @@ Product {
 
     property string uri: "com.company.module"
 
-    qbs.installRoot: Qt.quick.qmlPath
+    //qbs.installRoot: Qt.quick.qmlPath
 //    qbs.installRoot: "C:/Libraries/Labs/qml/"
 
     cpp.cxxLanguageVersion: "c++11"

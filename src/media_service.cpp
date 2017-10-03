@@ -27,12 +27,18 @@
  */
 
 const QString mpris_base = "org.mpris.MediaPlayer2";
-const QString mpris_path = "/Player";
-const QString mpris_interface = "org.freedesktop.MediaPlayer";
+const QString mpris_path = "/org/mpris/MediaPlayer2";
+const QString mpris_base_interface = "org.mpris.MediaPlayer2";
 
 QString mpris_service(const QString &app)
 {
     return mpris_base + "." + app;
+}
+
+QString mpris_interface(const QString &interface) {
+    if (interface.isEmpty())
+        return mpris_base_interface;
+    return mpris_base_interface + "." + interface;
 }
 
 /*!
@@ -41,44 +47,62 @@ QString mpris_service(const QString &app)
  * \param parent
  */
 MediaService::MediaService(QObject *parent)
-    : QObject{ parent }, m_player{ mpris_service("amarok"), mpris_path,
-                                   mpris_interface }
+    : QObject{ parent },
+      m_player{ mpris_service("clementine"), mpris_path,
+                mpris_interface("Player") }
 {
-    if (isValid())
+    if (isValid()) {
         emit validChanged(true);
-    connect(&m_player, SIGNAL(CapsChange(int)), this, SLOT(setCaps(int)));
-    m_player.connection().connect(mpris_service("amarok"), mpris_path, mpris_interface,
-                                  "TrackChange", this, SLOT(updateMetadata()));
-    m_player.connection().connect(mpris_service("amarok"), mpris_path, mpris_interface,
-                                  "TrackChange", this, SIGNAL(trackChanged(QVariantMap)));
-    updateVolume();
-    updateMetadata();
-
+    }
+    else {
+        qDebug() << "Failed to initialize Media Service";
+        return;
+    }
+    QDBusConnection::sessionBus().connect(mpris_service("clementine"), mpris_path, "org.freedesktop.DBus.Properties",
+                                          "PropertiesChanged", this, SLOT(playerPropertyChanged()));
+    playerPropertyChanged();
     auto pos_updater = new QTimer(this);
     pos_updater->setTimerType(Qt::PreciseTimer);
-    pos_updater->setInterval(100);
+    pos_updater->setInterval(50);
     connect(pos_updater, &QTimer::timeout, this, &MediaService::updatePosition);
     pos_updater->start();
 }
 
-int MediaService::caps() const
-{
-    return m_caps;
+void MediaService::playerPropertyChanged() {
+    emit volumeChanged(volume());
+
+    emit metadataChanged(metadata());
+
+    emit albumChanged(album());
+    emit artistChanged(artist());
+    emit arturlChanged(arturl());
+    emit audioBitrateChanged(audioBitrate());
+    emit audioSampleRateChanged(audioSampleRate());
+    emit bpmChanged(bpm());
+    emit commentChanged(comment());
+    emit genreChanged(genre());
+    emit locationChanged(location());
+    emit performerChanged(performer());
+    emit lengthChanged(length());
+    emit titleChanged(title());
+    emit trackNumberChanged(trackNumber());
+    emit trackIDChanged(trackID());
+    emit yearChanged(year());
 }
 
-int MediaService::volume() const
+float MediaService::volume() const
 {
-    return m_volume;
+    return m_player.property("Volume").toFloat();
 }
 
-void MediaService::setVolume(int vol)
+void MediaService::setVolume(float vol)
 {
-    if (vol != m_volume)
-        asyncSet("VolumeSet", vol, &m_volume, &MediaService::volumeChanged);
+    m_player.setProperty("Volume", vol);
 }
 
-QVariantMap MediaService::metadata() const
+const QVariantMap &MediaService::metadata()
 {
+    m_metadata = m_player.property("Metadata").toMap();
     return m_metadata;
 }
 
@@ -109,31 +133,22 @@ void MediaService::next()
 
 void MediaService::prev()
 {
-    m_player.asyncCall("Prev");
+    m_player.asyncCall("Previous");
 }
 
-void MediaService::volumeDown(int vol)
+void MediaService::volumeDown(float vol)
 {
-    auto ascb = m_player.asyncCall("VolumeDown", vol);
-    auto watcher = new QDBusPendingCallWatcher(ascb, this);
-
-    connect(watcher, &QDBusPendingCallWatcher::finished, this, &MediaService::updateVolume);
+    setVolume(volume() - vol);
 }
 
-void MediaService::volumeUp(int vol)
+void MediaService::volumeUp(float vol)
 {
-    auto ascb = m_player.asyncCall("VolumeUp", vol);
-    auto watcher = new QDBusPendingCallWatcher(ascb, this);
-
-    connect(watcher, &QDBusPendingCallWatcher::finished, this, &MediaService::updateVolume);
+    setVolume(volume() + vol);
 }
 
 void MediaService::mute()
 {
-    auto ascb = m_player.asyncCall("Mute");
-    auto watcher = new QDBusPendingCallWatcher(ascb, this);
-
-    connect(watcher, &QDBusPendingCallWatcher::finished, this, &MediaService::updateVolume);
+    setVolume(0.0);
 }
 
 void MediaService::showOSD()
@@ -146,97 +161,45 @@ void MediaService::repeat(bool rep)
     m_player.asyncCall("Repeat", rep);
 }
 
-void MediaService::setCaps(int cap)
-{
-    m_caps = cap;
-    emit capsChanged(cap);
-}
-
-void MediaService::updateVolume()
-{
-    QDBusReply<int> reply = m_player.call("VolumeGet");
-    if (reply.isValid())
-    {
-        m_volume = reply.value();
-        emit volumeChanged(m_volume);
-    }
-    else
-        qWarning() << reply.error().name() << reply.error().message();
-}
-
-void MediaService::updateMetadata()
-{
-    QDBusReply<QVariantMap> reply = m_player.call("GetMetadata");
-    if (reply.isValid())
-    {
-        m_metadata = reply.value();
-        emit metadataChanged(m_metadata);
-
-        emit albumChanged(album());
-        emit artistChanged(artist());
-        emit arturlChanged(arturl());
-        emit audioBitrateChanged(audioBitrate());
-        emit audioSampleRateChanged(audioSampleRate());
-        emit bpmChanged(bpm());
-        emit commentChanged(comment());
-        emit genreChanged(genre());
-        emit locationChanged(location());
-        emit mtimeChanged(mtime());
-        emit performerChanged(performer());
-        emit timeChanged(time());
-        emit titleChanged(title());
-        emit trackNumberChanged(trackNumber());
-        emit yearChanged(year());
-    }
-    else
-        qWarning() << reply.error().name() << reply.error().message();
-}
-
 int MediaService::position() const
 {
-    return m_pos;
+    return m_player.property("Position").toInt();
 }
 
 void MediaService::setPosition(int pos)
 {
-    m_player.asyncCall("PositionSet", pos);
+    QDBusObjectPath trackPath{ trackID() };
+    m_player.asyncCall("SetPosition", QVariant::fromValue(trackPath), pos);
 }
 
 void MediaService::updatePosition()
 {
-    QDBusReply<int> reply = m_player.call("PositionGet");
-    if (reply.isValid())
-    {
-        m_pos = reply.value();
-        emit positionChanged(m_pos);
-    }
-    else
-        qWarning() << reply.error().name() << reply.error().message();
+    emit positionChanged(position());
 }
 
 QString MediaService::album() const
 {
-    return m_metadata.value("album").toString();
+    return m_metadata.value("xesam:album").toString();
 }
 
 QString MediaService::artist() const
 {
-    return m_metadata.value("artist").toString();
+    return m_metadata.value("xesam:artist").toString();
 }
 
 QUrl MediaService::arturl() const
 {
-    return m_metadata.value("arturl").toUrl();
+    return m_metadata.value("mpris:artUrl").toUrl();
 }
 
 int MediaService::audioBitrate() const
 {
-    return m_metadata.value("audio-bitrate").toInt();
+    return m_metadata.value("bitrate").toInt();
 }
 
 int MediaService::audioSampleRate() const
 {
-    return m_metadata.value("audio-samplerate").toInt();
+    return m_metadata.value("samplerate").toInt();
 }
 
 double MediaService::bpm() const
@@ -246,42 +209,42 @@ double MediaService::bpm() const
 
 QString MediaService::comment() const
 {
-    return m_metadata.value("comment").toString();
+    return m_metadata.value("xesam:comment").toString();
 }
 
 QString MediaService::genre() const
 {
-    return m_metadata.value("genre").toString();
+    return m_metadata.value("xesam:genre").toString();
 }
 
 QUrl MediaService::location() const
 {
-    return m_metadata.value("location").toUrl();
-}
-
-qlonglong MediaService::mtime() const
-{
-    return m_metadata.value("mtime").toLongLong();
+    return m_metadata.value("xesam:url").toUrl();
 }
 
 QString MediaService::performer() const
 {
-    return m_metadata.value("performer").toString();
+    return m_metadata.value("xesam:artist").toString();
 }
 
-qlonglong MediaService::time() const
+qlonglong MediaService::length() const
 {
-    return m_metadata.value("time").toLongLong();
+    return m_metadata.value("mpris:length").toLongLong();
 }
 
 QString MediaService::title() const
 {
-    return m_metadata.value("title").toString();
+    return m_metadata.value("xesam:title").toString();
 }
 
 int MediaService::trackNumber() const
 {
-    return m_metadata.value("tracknumber").toInt();
+    return m_metadata.value("xesam:tracknumber").toInt();
+}
+
+QString MediaService::trackID() const
+{
+    return m_metadata.value("mpris:trackid").toString();
 }
 
 int MediaService::year() const
@@ -291,21 +254,6 @@ int MediaService::year() const
 
 QString MediaService::timeLabel(qreal position)
 {
-    qlonglong ts = position * time();
-    return QString::fromStdString(lyrics::time_str(std::chrono::seconds{ ts })).left(5);
+    qlonglong ts = position * length();
+    return QString::fromStdString(lyrics::time_str(std::chrono::microseconds{ ts })).left(5);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
